@@ -17,7 +17,7 @@
 >   istTeilmenge :: a -> a -> Bool
 >   istObermenge :: a -> a -> Bool
 >   zeige :: a -> String
-
+> -------------------------------------------------------------------- (a) --------------------------------------------------------------
 > instance Menge MT1 where
 >   leereMenge = MT1 []
 >   allMenge = MT1 (['a'..'z'] ++ ['A'..'Z'])
@@ -67,10 +67,13 @@
 > istMengeMT1 (x:xs) =
 >   if x `elem` (['a'..'z'] ++ ['A'..'Z']) then istMengeMT1 xs
 >   else False
+> -------------------------------------------------------------------- (b) --------------------------------------------------------------
+
 
 > main :: IO ()
 > main = do
 >   putStrLn $ "----------------------------A1----------------------------"
+>   putStrLn $ "----------------------------(a)---------------------------"
 >   let m1 = MT1['a','b','c']
 >   let m1'= MT1['b','e']
 >   let m1''= MT1['a','c']
@@ -98,3 +101,4 @@
 >   putStrLn $ "istObermenge {'a','d','c'} {'a','c'}: " ++ show(istObermenge m1 m1'')
 >   putStrLn $ "istObermenge {'a','c'} {'b','e'}: " ++ show(istObermenge m1'' m1')
 >   putStrLn $ "istObermenge allMenge MT1 {'a','c'} : " ++ show(istObermenge (allMenge :: MT1) m1'' )
+>   putStrLn $ "----------------------------(b)---------------------------"
