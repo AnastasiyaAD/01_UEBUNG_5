@@ -70,6 +70,49 @@
 > -------------------------------------------------------------------- (b) --------------------------------------------------------------
 > instance Menge MT2 where
 >   leereMenge = Nichts
+>   allMenge = createMT2 (['a'..'z'] ++ ['A'..'Z'])
+>   istMenge Nichts = True
+>   istMenge x = istMenge (MT1(toListeMT2 x))
+>   vereinige x y = 
+>       if istMenge x && istMenge y then createMT2 (removeDuplicates (summMT2 x y))
+>       else error "Ungültige Elemente"
+>   schneide x y =
+>       if istMenge x && istMenge y then createMT2 (duplicates (summMT2 x y))
+>       else error "Ungültige Elemente"
+>   zieheab x y =
+>      if istMenge x && istMenge y then createMT2 (filter (`notElem` (duplicates (summMT2 x y))) (removeDuplicates (summMT2 x y))) -- zieheab {'a','d','c'} {'a','c'} : {'b'}
+>       else error "Ungültige Elemente"
+>   komplementiere x = 
+>       if istMenge x then zieheab x (allMenge :: MT2)
+>       else error "Ungültige Elemente"
+>   sindGleich x y =
+>       if istMenge x && istMenge y then toListeMT2 x == toListeMT2 y
+>       else error "Ungültige Elemente"
+>   istTeilmenge x y =
+>       if istMenge x && istMenge y then toListeMT2 x == duplicates (summMT2 x y) || sindGleich x (leereMenge :: MT2)
+>       else error "Ungültige Elemente"
+>   istObermenge x y =
+>       if istMenge x && istMenge y then toListeMT2 y == duplicates (summMT2 x y) || sindGleich x (allMenge :: MT2)
+>       else error "Ungültige Elemente"
+>   zeige :: MT2 -> String
+>   zeige (Nichts) = "{}"
+>   zeige (VerlaengereUm x xs) = zeige (MT1(toListeMT2(VerlaengereUm x xs)))
+
+> createMT2 :: [Char] -> MT2
+> createMT2 [x] = VerlaengereUm x Nichts
+> createMT2 (x:xs) = VerlaengereUm x (createMT2(xs))
+
+> toListeMT2' :: MT2 -> [Char]
+> toListeMT2' (VerlaengereUm z n) = toListeMT2' n ++ [z]
+> toListeMT2' (Nichts) = []
+
+> toListeMT2 :: MT2 -> [Char]
+> toListeMT2 x = reverse (toListeMT2' x)
+
+> summMT2 :: MT2 -> MT2 -> [Char]
+> summMT2 x y = toListeMT2 x ++ toListeMT2 y
+
+
 > main :: IO ()
 > main = do
 >   putStrLn $ "----------------------------(a)---------------------------"
@@ -102,4 +145,34 @@
 >   putStrLn $ "istObermenge allMenge MT1 {'a','c'} : " ++ show(istObermenge (allMenge :: MT1) m1'' )
 >   putStrLn $ ""
 >   putStrLn $ "zeige (MT1 'aabc') : " ++ zeige (MT1 "aabc")
+>   putStrLn $ "----------------------------(b)---------------------------"
+>   let m2 = createMT2 ['a','b','c']
+>   let m2'= createMT2 ['b','e']
+>   let m2''= createMT2 ['a','c']
+>   putStrLn $ "leereMenge MT2 : " ++ zeige (leereMenge :: MT2)
+>   putStrLn $ ""
+>   putStrLn $ "allMenge MT2 : " ++ zeige (allMenge :: MT2)
+>   putStrLn $ ""
+>   putStrLn $ "vereinige {'a','b','c'} {'b','e'} : " ++ zeige (vereinige m2 m2')
+>   putStrLn $ ""
+>   putStrLn $ "schneide {'a','d','c'} {'a','c'} : " ++ zeige (schneide m2 m2'')
+>   putStrLn $ ""
+>   putStrLn $ "zieheab {'a','d','c'} {'a','c'} : " ++ zeige (zieheab m2 m2'')
+>   putStrLn $ ""
+>   putStrLn $ "komplementiere {'a','d','c'} : " ++ zeige (komplementiere m2)
+>   putStrLn $ ""
+>   putStrLn $ "sindGleich {'a','d','c'} {'a','d','c'} : " ++ show (sindGleich m2 m2)
+>   putStrLn $ "sindGleich {'a','d','c'} {'a','c'} : " ++ show(sindGleich m2 m2'')
+>   putStrLn $ ""
+>   putStrLn $ "istTeilmenge {'a','d','c'} {'a','d','c'} : " ++ show (istTeilmenge m2 m2)
+>   putStrLn $ "istTeilmenge {'a','c'} {'a','d','c'}: " ++ show(istTeilmenge m2'' m2)
+>   putStrLn $ "istTeilmenge {'a','c'} {'b','e'}: " ++ show(istTeilmenge m2'' m2')
+>   putStrLn $ "istTeilmenge {} {'a','c'} : " ++ show(istTeilmenge (leereMenge :: MT2) m2'' )
+>   putStrLn $ ""
+>   putStrLn $ "istObermenge {'a','d','c'} {'a','d','c'} : " ++ show (istObermenge m2 m2)
+>   putStrLn $ "istObermenge {'a','d','c'} {'a','c'}: " ++ show(istObermenge m2 m2'')
+>   putStrLn $ "istObermenge {'a','c'} {'b','e'}: " ++ show(istObermenge m2'' m2')
+>   putStrLn $ "istObermenge allMenge MT2 {'a','c'} : " ++ show(istObermenge (allMenge :: MT2) m2'' )
+>   putStrLn $ ""
+>   putStrLn $ "zeige (VerlaengereUm 'a' (VerlaengereUm 'c' (Nichts))) : " ++ zeige (VerlaengereUm 'a' (VerlaengereUm 'c' (Nichts)))
 >   putStrLn $ "----------------------------(b)---------------------------"
