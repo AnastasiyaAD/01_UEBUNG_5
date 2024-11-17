@@ -72,7 +72,6 @@
 >   leereMenge = Nichts
 > main :: IO ()
 > main = do
->   putStrLn $ "----------------------------A1----------------------------"
 >   putStrLn $ "----------------------------(a)---------------------------"
 >   let m1 = MT1['a','b','c']
 >   let m1'= MT1['b','e']
@@ -102,5 +101,5 @@
 >   putStrLn $ "istObermenge {'a','c'} {'b','e'}: " ++ show(istObermenge m1'' m1')
 >   putStrLn $ "istObermenge allMenge MT1 {'a','c'} : " ++ show(istObermenge (allMenge :: MT1) m1'' )
 >   putStrLn $ ""
->   putStrLn $ "zeige (MT1 'aabc')" ++ zeige (MT1 "aabc")
+>   putStrLn $ "zeige (MT1 'aabc') : " ++ zeige (MT1 "aabc")
 >   putStrLn $ "----------------------------(b)---------------------------"
