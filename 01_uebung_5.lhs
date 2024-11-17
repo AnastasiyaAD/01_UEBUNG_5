@@ -1,4 +1,5 @@
 > module Mengen where
+> import Data.List 
 > type Element = Char -- Datentyp für Mengenglieder
 > newtype MT1 = MT1 [Element] -- Datentyp für Mengen, repräsentiert als Listen
 > data MT2 = Nichts
@@ -102,16 +103,28 @@
 > createMT2 [x] = VerlaengereUm x Nichts
 > createMT2 (x:xs) = VerlaengereUm x (createMT2(xs))
 
+> toListeMT2 :: MT2 -> [Char]
+> toListeMT2 x = reverse (toListeMT2' x)
+
 > toListeMT2' :: MT2 -> [Char]
 > toListeMT2' (VerlaengereUm z n) = toListeMT2' n ++ [z]
 > toListeMT2' (Nichts) = []
 
-> toListeMT2 :: MT2 -> [Char]
-> toListeMT2 x = reverse (toListeMT2' x)
-
 > summMT2 :: MT2 -> MT2 -> [Char]
 > summMT2 x y = toListeMT2 x ++ toListeMT2 y
-
+> -------------------------------------------------------------------- (c) --------------------------------------------------------------
+> instance Menge MT3 where
+>   leereMenge = MT3 (\_ -> False) -- Die charakteristische Funktion gibt immer False zurück.
+>   allMenge = MT3 (\_ -> True) -- Die charakteristische Funktion gibt immer True zurück.
+>   istMenge = \_ -> True  
+>   vereinige (MT3 f) (MT3 g) = MT3 (\x -> f x || g x)
+>   schneide (MT3 f) (MT3 g) = MT3 (\x -> f x && g x)
+>   zieheab (MT3 f) (MT3 g) = MT3 (\x -> f x && not (g x))
+>   komplementiere (MT3 f) = MT3 (\x -> not (f x))
+>   sindGleich (MT3 f) (MT3 g) = all (\x -> f x == g x) (['a'..'z'] ++ ['A'..'Z']) --  Zwei Mengen sind gleich, wenn ihre charakteristischen Funktionen identisch sind.
+>   istTeilmenge (MT3 f) (MT3 g) = all (\x -> f x <= g x) (['a'..'z'] ++ ['A'..'Z']) -- Teilmenge: A ist eine Teilmenge von B, wenn für alle x gilt: Wenn x in A ist, dann ist x auch in B.
+>   istObermenge (MT3 f) (MT3 g) = all (\x -> g x <= f x) (['a'..'z'] ++ ['A'..'Z']) --Obermenge: A ist eine Obermenge von B, wenn für alle x gilt: Wenn x in B ist, dann ist x auch in A.
+>   zeige (MT3 f) = "{ " ++ intercalate "," (map show (filter f (['a'..'z'] ++ ['A'..'Z']))) ++ " }"
 
 > main :: IO ()
 > main = do
@@ -175,4 +188,33 @@
 >   putStrLn $ "istObermenge allMenge MT2 {'a','c'} : " ++ show(istObermenge (allMenge :: MT2) m2'' )
 >   putStrLn $ ""
 >   putStrLn $ "zeige (VerlaengereUm 'a' (VerlaengereUm 'c' (Nichts))) : " ++ zeige (VerlaengereUm 'a' (VerlaengereUm 'c' (Nichts)))
->   putStrLn $ "----------------------------(b)---------------------------"
+>   putStrLn $ "----------------------------(c)---------------------------"
+>   let m3 = MT3 (\x -> x `elem` ['a', 'b', 'c'])
+>   let m3' = MT3 (\x -> x `elem` ['b', 'e'])
+>   let m3'' = MT3 (\x -> x `elem` ['a', 'c'])
+>   putStrLn $ "leereMenge MT3 : " ++ zeige (leereMenge :: MT3)
+>   putStrLn $ ""
+>   putStrLn $ "allMenge MT3 : " ++ zeige (allMenge :: MT3)
+>   putStrLn $ ""
+>   putStrLn $ "vereinige {'a','b','c'} {'b','e'} : " ++ zeige (vereinige m3 m3')
+>   putStrLn $ ""
+>   putStrLn $ "schneide {'a','d','c'} {'a','c'} : " ++ zeige (schneide m3 m3'')
+>   putStrLn $ ""
+>   putStrLn $ "zieheab {'a','d','c'} {'a','c'} : " ++ zeige (zieheab m3 m3'')
+>   putStrLn $ ""
+>   putStrLn $ "komplementiere {'a','d','c'} : " ++ zeige (komplementiere m3)
+>   putStrLn $ ""
+>   putStrLn $ "sindGleich {'a','d','c'} {'a','d','c'} : " ++ show (sindGleich m3 m3)
+>   putStrLn $ "sindGleich {'a','d','c'} {'a','c'} : " ++ show(sindGleich m3 m3'')
+>   putStrLn $ ""
+>   putStrLn $ "istTeilmenge {'a','d','c'} {'a','d','c'} : " ++ show (istTeilmenge m3 m3)
+>   putStrLn $ "istTeilmenge {'a','c'} {'a','d','c'}: " ++ show(istTeilmenge m3'' m3)
+>   putStrLn $ "istTeilmenge {'a','c'} {'b','e'}: " ++ show(istTeilmenge m3'' m3')
+>   putStrLn $ "istTeilmenge {} {'a','c'} : " ++ show(istTeilmenge (leereMenge :: MT3) m3'' )
+>   putStrLn $ ""
+>   putStrLn $ "istObermenge {'a','d','c'} {'a','d','c'} : " ++ show (istObermenge m3 m3)
+>   putStrLn $ "istObermenge {'a','d','c'} {'a','c'}: " ++ show(istObermenge m3 m3'')
+>   putStrLn $ "istObermenge {'a','c'} {'b','e'}: " ++ show(istObermenge m3'' m3')
+>   putStrLn $ "istObermenge allMenge MT3 {'a','c'} : " ++ show(istObermenge (allMenge :: MT3) m3'' )
+>   putStrLn $ ""
+
