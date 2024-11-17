@@ -68,8 +68,8 @@
 >   if x `elem` (['a'..'z'] ++ ['A'..'Z']) then istMengeMT1 xs
 >   else False
 > -------------------------------------------------------------------- (b) --------------------------------------------------------------
-
-
+> instance Menge MT2 where
+>   leereMenge = Nichts
 > main :: IO ()
 > main = do
 >   putStrLn $ "----------------------------A1----------------------------"
@@ -101,4 +101,6 @@
 >   putStrLn $ "istObermenge {'a','d','c'} {'a','c'}: " ++ show(istObermenge m1 m1'')
 >   putStrLn $ "istObermenge {'a','c'} {'b','e'}: " ++ show(istObermenge m1'' m1')
 >   putStrLn $ "istObermenge allMenge MT1 {'a','c'} : " ++ show(istObermenge (allMenge :: MT1) m1'' )
+>   putStrLn $ ""
+>   putStrLn $ "zeige (MT1 'aabc')" ++ zeige (MT1 "aabc")
 >   putStrLn $ "----------------------------(b)---------------------------"
